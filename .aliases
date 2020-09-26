@@ -1,0 +1,7 @@
+# alias
+alias h='cd ~/Desktop'
+alias ,dm='docker-machine'
+alias ll='ls -al -G'
+alias l='ls -G'
+alias la='ls -aG'
+alias ..='cd ..'
