@@ -5,3 +5,5 @@ alias ll='ls -al -G'
 alias l='ls -G'
 alias la='ls -aG'
 alias ..='cd ..'
+
+# alias ctags="`brew --prefix`/bin/ctags"

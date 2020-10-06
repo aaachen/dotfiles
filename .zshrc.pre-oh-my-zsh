@@ -43,6 +43,7 @@ function year {
   ;;
  esac
  cd "$SCHOOL/$YEAR"
+ pwd
 }
 
 # function cd { if [[ $@ == "-" ]]; then command cd - > /dev/null; else command cd "$@"; fi;}
@@ -53,6 +54,6 @@ function year {
 # archey -o
 
 # source aliases
-. .aliases
+. ~/dotfiles/.aliases
 
 eval $(thefuck --alias)
