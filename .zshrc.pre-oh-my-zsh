@@ -1,10 +1,11 @@
-export PATH=$PATH:/usr/local/bin
 export PATH=$HOME/anaconda/bin:$PATH
-export GOPATH=$(go env GOPATH)
-export GOBIN=$GOPATH/bin
-export PATH=$PATH:$GOPATH/bin
-export PATH=$PATH:$GOROOT
-# export PS1="[\A \u@\h \W]\$ "
+export PATH=$PATH:/usr/local/bin
+# part of go installation
+export PATH=$PATH:/usr/local/go/bin
+#export GOPATH=$(go env GOPATH)
+#export GOBIN=$GOPATH/bin
+#export PATH=$PATH:$GOPATH/bin
+#export PATH=$PATH:$GOROOT
 
 # functions
 function mkcd {
@@ -56,4 +57,4 @@ function year {
 # source aliases
 . ~/dotfiles/.aliases
 
-eval $(thefuck --alias)
+#eval $(thefuck --alias)
