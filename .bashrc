@@ -4,6 +4,7 @@
 # bashrc for andrew's linux desktop
 
 export DESKTOP="$HOME/Desktop/"
+export EDITOR="vim"
 
 # If not running interactively, don't do anything
 case $- in

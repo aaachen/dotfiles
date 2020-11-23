@@ -53,3 +53,8 @@ archey -o
 
 eval $(thefuck --alias)
 shopt -s extglob
+#
+# ~/.bash_profile
+#
+
+[[ -f ~/.bashrc ]] && . ~/.bashrc
