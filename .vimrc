@@ -5,6 +5,7 @@ call plug#begin('~/.vim/plugged')
 " colorschemes
 Plug 'arzg/vim-colors-xcode'
 Plug 'romainl/Apprentice'
+Plug 'morhetz/gruvbox'
 
 " statusline configuration
 Plug 'vim-airline/vim-airline'
@@ -131,7 +132,7 @@ let &t_SI = "\<Esc>[5 q"    " I beam cursor for insert mode, SI = start insert
 "{{{ Colorscheme
 syntax enable
 set termguicolors " enable true colors support
-colorscheme apprentice
+colorscheme gruvbox
 "}}}
 
 "{{{ Command
