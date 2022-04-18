@@ -13,7 +13,7 @@ fi
 
 # Path to your oh-my-zsh installation.
 # not using absolute path here, as opposed to what's set during installation
-#export ZSH="/home/andrew/.oh-my-zsh"
+# export ZSH="/home/andrew/.oh-my-zsh"
 system_name="$(uname -s)"
 case "${system_name}" in
     Linux*)     export ZSH="/home/andrew/.oh-my-zsh";;
@@ -125,3 +125,19 @@ export EDITOR='vim'
 # source old configuration
 . ~/.zshrc.pre-oh-my-zsh
 setopt extendedglob
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/andrew/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/andrew/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/andrew/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/andrew/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+

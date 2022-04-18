@@ -1,12 +1,3 @@
-export PATH=$HOME/anaconda/bin:$PATH
-export PATH=$PATH:/usr/local/bin
-# part of go installation
-export PATH=$PATH:/usr/local/go/bin
-#export GOPATH=$(go env GOPATH)
-#export GOBIN=$GOPATH/bin
-#export PATH=$PATH:$GOPATH/bin
-#export PATH=$PATH:$GOROOT
-
 # functions
 function mkcd {
   last=$(eval "echo \$$#")
@@ -18,43 +9,14 @@ function mkcd {
     mkdir $@ && cd $last
   fi
 }
-function year {
- SCHOOL="/Users/Andrew/Desktop/School"
- if [ -z "$1" ]
- then 
-     echo "Enter college year"
-     return
- fi
- YEAR=
- case $1 in 
- 1)
-  YEAR="Freshman-Year"
-  ;;
- 2)
-  YEAR="Sophomore-Year"
-  ;;
- 3)
-  YEAR="Junior-Year"
-  ;;
- 4)
-  YEAR="Senior-Year"
-  ;;
- *)
-  echo "Unrecognized college year"
-  ;;
- esac
- cd "$SCHOOL/$YEAR"
- pwd
-}
+
+# source aliases
+. ~/dotfiles/.aliases
 
 # function cd { if [[ $@ == "-" ]]; then command cd - > /dev/null; else command cd "$@"; fi;}
 
 # function g { if [ -z "$1"] && git status; else command git "$@"; fi;}
 
-# incompatible with powerlevel10k instant prompt 
-# archey -o
+# eval $(thefuck --alias)
 
-# source aliases
-. ~/dotfiles/.aliases
-
-#eval $(thefuck --alias)
+# export PATH=$PATH:/usr/local/bin
