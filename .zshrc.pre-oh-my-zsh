@@ -11,7 +11,7 @@ function mkcd {
 }
 
 # source aliases
-. ~/dotfiles/.aliases
+. ~/.aliases
 
 # function cd { if [[ $@ == "-" ]]; then command cd - > /dev/null; else command cd "$@"; fi;}
 

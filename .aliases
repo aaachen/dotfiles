@@ -1,9 +1,10 @@
-alias h='cd ~/Desktop'
-alias ,dm='docker-machine'
-alias ll='ls -al -G'
-alias l='ls -G'
-alias la='ls -aG'
-alias ..='cd ..'
-alias v='vim'
+alias ..="cd .."
+alias h="cd ~/Desktop"
+alias l="ls -G"
+alias ll="ls -al -G"
+alias la="ls -aG"
+alias ,dm="docker-machine"
+alias v="vim"
+alias o="xdg-open"
 
 # alias ctags="`brew --prefix`/bin/ctags"

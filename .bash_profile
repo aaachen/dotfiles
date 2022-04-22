@@ -12,34 +12,10 @@ function mkcd {
   if [ ! -n "$last" ]; then
     echo "Enter a directory name"
   elif [ -d $last ]; then
-    echo "\`$last' already exists"
+    echo "$last already exists"
   else
     mkdir $@ && cd $last
   fi
-}
-function year {
- SCHOOL="/Users/Andrew/Desktop/School"
- if [ -z "$1" ]
- then 
-     echo "Enter college year"
-     return
- fi
- YEAR=
- case $1 in 
- 1)
-  YEAR="Freshman-Year"
-  ;;
- 2)
-  YEAR="Sophomore-Year"
-  ;;
- 3)
-  YEAR="Junior-Year"
-  ;;
- *)
-  echo "Unrecognized college year"
-  ;;
- esac
- cd "$SCHOOL/$YEAR"
 }
 
 function cd { if [[ $@ == "-" ]]; then command cd - > /dev/null; else command cd "$@"; fi;}
@@ -48,13 +24,7 @@ function cd { if [[ $@ == "-" ]]; then command cd - > /dev/null; else command cd
 # brew start
 archey -o
 
-# source aliases
-. .bash_aliases
-
 eval $(thefuck --alias)
 shopt -s extglob
-#
-# ~/.bash_profile
-#
 
 [[ -f ~/.bashrc ]] && . ~/.bashrc
