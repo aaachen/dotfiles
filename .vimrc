@@ -1,4 +1,5 @@
 "Author: Andrew Chen
+"https://github.com/aaachen
 
 "Vim-Plug {{{
 call plug#begin('~/.vim/plugged')
@@ -18,13 +19,16 @@ Plug 'ctrlpvim/ctrlp.vim'
 " https://github.com/preservim/nerdtree
 Plug 'preservim/nerdtree'
 
+" https://github.com/cometsong/CommentFrame.vim
+Plug 'cometsong/CommentFrame.vim'
+
 " wiki 
 " https://github.com/vimwiki/vimwiki
 Plug 'vimwiki/vimwiki'
 
-" git
-" show changed lines https://github.com/airblade/vim-gitgutter
-"Plug 'airblade/vim-gitgutter'
+" distraction free writing
+Plug 'junegunn/goyo.vim'
+Plug 'junegunn/limelight.vim'
 
 " code format
 " see https://github.com/google/vim-codefmt
@@ -32,6 +36,11 @@ Plug 'vimwiki/vimwiki'
 Plug 'google/vim-maktaba'
 Plug 'google/vim-codefmt'
 Plug 'google/vim-glaive'
+
+" git
+" show changed lines https://github.com/airblade/vim-gitgutter
+"Plug 'airblade/vim-gitgutter'
+
 call plug#end()
 
 "{{{Variable definition & configuration
@@ -189,8 +198,40 @@ augroup ft_vim
     au filetype vim setlocal foldmethod=marker foldmarker={{{,}}}
     " fold all folders
     au filetype vim normal zM
-    "au filetype vim nnoremap <leader>b :RegionBlock<CR>
+    au filetype vim nnoremap <leader>f :CommentFrameHashDash "
+    " https://superuser.com/questions/271023/can-i-disable-continuation-of-comments-to-the-next-line-in-vim
+    au filetype vim setlocal formatoptions-=cro
 augroup end
+
+"}}}
+
+" Vimwiki {{{
+    " append to this list so each path becomes its own wiki
+    let g:vimwiki_list = [
+                \{'path': '~/vimwiki', 'syntax': 'markdown', 'ext': '.md'},
+                \{'path': '~/vimwiki/linux', 'syntax': 'markdown', 'ext': '.md'}]
+    let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown', '.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
+    " Makes vimwiki markdown links as [text](text.md) instead of [text](text)
+    " This doesn't work?
+    let g:taskwiki_markup_syntax = 'markdown'
+    let g:markdown_folding = 1
+" }}}
+
+" Goyo {{{
+
+" https://www.youtube.com/watch?v=2cIdnfT5zxA
+let g:goyo_width = 90
+" larger -> more contrast
+let g:limelight_default_coefficient = 0.7
+" highlight more than current paragraph (i.e. surrounding paragraph)
+" let g:limelight_paragraph_span = 1
+
+map <leader>gy :Goyo<CR>
+map <leader>ll :Limelight!!<CR>
+" When enter goyo turn on limelight, custom event handler prob handled by
+" Goyo library 
+autocmd! User GoyoEnter Limelight
+autocmd! User GoyoLeave Limelight!
 
 "}}}
 
@@ -211,10 +252,21 @@ augroup end
     autocmd Filetype markdown inoremap <leader>5 #####<Space><CR><CR><++><Esc>2kA
     autocmd Filetype markdown inoremap <leader>6 ######<Space><CR><CR><++><Esc>2kA
     
-    "=============================="
-    "    Vimwiki Markdown Cmd's    "
-    "=============================="
+"------------------------------------------------------------------------------"
+"                             Vimwiki Markdown Cmd                             "
+"------------------------------------------------------------------------------"
 
+    autocmd FileType markdown nnoremap <leader>diary i#<Space><++><CR><CR><++><CR><CR>##<Space>DevLog<CR><CR><++><CR><CR><Esc>gg
+    autocmd FileType markdown inoremap <leader>note #<Space>Explain<CR><CR><CR><CR>#<Space>Documentation<CR><CR><CR><CR>#<Space>Code<CR><CR>```<CR><CR>#<Space>Documentation<CR><CR>```<Esc>gg2ji
+    autocmd Filetype markdown inoremap <leader>now *<CR><Esc>!!date<CR>A*<Esc>kJxA<CR><CR>
+    " TODO: make a python script that automatically adds it for diary
+
+    " https://vi.stackexchange.com/questions/7194/how-to-substitute-the-first-occurrence-across-the-whole-file
+    " The below method somehow skips the current line during search
+    "autocmd Filetype markdown nnoremap <leader>, :/ *<++>/s///<CR>A
+    "autocmd Filetype markdown inoremap <leader>, <Esc>:/ *<++>/s///<CR>A
+    autocmd Filetype markdown nnoremap <leader>, /<++>/<CR>vf>da
+    autocmd Filetype markdown inoremap <leader>, <Esc>/<++>/<CR>vf>da
 " }}}
 
 " Archive {{{
