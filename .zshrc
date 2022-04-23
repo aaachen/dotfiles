@@ -1,3 +1,13 @@
+######################################################      
+#                                                    #    
+#        .zshrc                                      #    
+#        1. set oh-my-zsh settings                   #    
+#        2. source aliases in ~/.aliases             #    
+#        3. source everything else defined           # 
+#           in ~/.zshrc.pre-oh-my-zsh                # 
+#                                                    #
+######################################################
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -90,54 +100,28 @@ plugins=(
     zsh-syntax-highlighting
 )
 
+# source custom functions
 source $ZSH/oh-my-zsh.sh
-
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-export EDITOR='vim'
-# Preferred editor for local and remote sessions
-#if [[ -n $SSH_CONNECTION ]]; then
-#  export EDITOR='vim'
-#else
-#  export EDITOR='mvim'
-#fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# source old configuration
+# User configuration
+
+# remove all oh_my_zsh alias 
+# unalias -a
+# https://github.com/ohmyzsh/ohmyzsh/issues/10644
+#
+# remove all git aliases 
+# https://stackoverflow.com/questions/4168371/how-can-i-remove-all-text-after-a-character-in-bash
+omz_alias_remove=($(alias | grep "='git" | sed 's/=.*//g' | tr "\n" " " | tr -d "'"))
+for a in $omz_alias_remove; do
+    unalias $a
+done
+unset omz_alias_remove
+
+# source aliases
+. ~/.aliases
+
+# source my configuration
 . ~/.zshrc.pre-oh-my-zsh
-setopt extendedglob
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/andrew/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/andrew/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/andrew/miniconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/andrew/miniconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
-

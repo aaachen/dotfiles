@@ -1,4 +1,15 @@
-# functions
+#------------------------------------------------------------------------------#
+#                           Environment Var & Options                          #
+#------------------------------------------------------------------------------#
+export EDITOR='vim'
+setopt extendedglob
+
+#------------------------------------------------------------------------------#
+#                                   Function                                   #
+#------------------------------------------------------------------------------#
+
+# TODO move to ~/.zsh_functions
+
 function mkcd {
   last=$(eval "echo \$$#")
   if [ ! -n "$last" ]; then
@@ -10,13 +21,52 @@ function mkcd {
   fi
 }
 
-# source aliases
-. ~/.aliases
+function rgvim {
+    choice=$(rg -il $@ | fzf -0 -1 --ansi --preview "cat {}")
+    [[ ! -z "$choice" ]] && vim "+/"$@ $choice
+}
 
+#------------------------------------------------------------------------------#
+#                                      3P                                      #
+#------------------------------------------------------------------------------#
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/andrew/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/andrew/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/andrew/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/andrew/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# https://github.com/wfxr/forgit
+[ -f /usr/share/zsh/plugins/forgit-git/forgit.plugin.zsh ] && source /usr/share/zsh/plugins/forgit-git/forgit.plugin.zsh
+
+#------------------------------------------------------------------------------#
+#                                    Archive                                   #
+#------------------------------------------------------------------------------#
+
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+#
+# Preferred editor for local and remote sessions
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='mvim'
+# fi
+#
+# Compilation flags
+# export ARCHFLAGS="-arch x86_64"
+#
 # function cd { if [[ $@ == "-" ]]; then command cd - > /dev/null; else command cd "$@"; fi;}
-
 # function g { if [ -z "$1"] && git status; else command git "$@"; fi;}
-
 # eval $(thefuck --alias)
-
-# export PATH=$PATH:/usr/local/bin
