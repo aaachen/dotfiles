@@ -2,15 +2,17 @@
 "https://github.com/aaachen
 
 "Vim-Plug {{{
+" all those plugs are appended to runtimepath - echo &runtimepath
 call plug#begin('~/.vim/plugged')
+" status line (70 -> ~90 ms start time): 
+" https://github.com/itchyny/lightline.vim
+Plug 'itchyny/lightline.vim'
+
 " colorschemes
 Plug 'arzg/vim-colors-xcode'
 Plug 'morhetz/gruvbox'
 
-" statusline configuration
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes' 
-
+" vimwiki
 " https://github.com/vimwiki/vimwiki
 Plug 'vimwiki/vimwiki'
 
@@ -24,66 +26,35 @@ Plug 'junegunn/limelight.vim'
 Plug 'junegunn/fzf',  { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
-" Debug
-" https://github.com/dstein64/vim-startuptime
-Plug 'dstein64/vim-startuptime'
-
-" Unused plugins {{{
-" Code format
-" see https://github.com/google/vim-codefmt
-" Add maktaba and codefmt to the runtimepath.
-" Plug 'google/vim-maktaba'
-" Plug 'google/vim-codefmt'
-" Plug 'google/vim-glaive'
-
-" This is post hook, use the VimEnter hook http://vimdoc.sourceforge.net/htmldoc/autocmd.html#VimEnter
-" VimEnter * ..., This way does not delay loading buffer
-" completing vim-codefmt installation
-" call glaive#Install()
-" enable codefmt's default mappings on the <Leader>= prefix.
-" Glaive codefmt plugin[mappings]
-
-" Align https://github.com/junegunn/vim-easy-align
-" Plug 'junegunn/vim-easy-align'
-
-" https://github.com/francoiscabrol/ranger.vim
-" Plug 'francoiscabrol/ranger.vim'
-
-" Ranger https://github.com/francoiscabrol/ranger.vim
-"let g:ranger_map_keys = 0
-"nnoremap <leader>r :Ranger<CR>
-
-" https://github.com/airblade/vim-rooter
-" Plug 'airblade/vim-rooter'
-" Git-vim integration 
-" https://github.com/tpope/vim-fugitive 
-" Plug 'tpope/vim-fugitive'
-
-" Git commit browser
-" https://github.com/junegunn/gv.vim
-" Plug 'junegunn/gv.vim'
-
-" show changed lines https://github.com/airblade/vim-gitgutter
-" Plug 'airblade/vim-gitgutter'
-
 " nerd tree
 " https://github.com/preservim/nerdtree
-" Plug 'preservim/nerdtree'
+Plug 'preservim/nerdtree'
+" extension to add visual-select
+" https://github.com/PhilRunninger/nerdtree-visual-selection
+Plug 'PhilRunninger/nerdtree-visual-selection'
 
 " unix helper
 " https://github.com/tpope/vim-eunuch
-" Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-eunuch'
 
-" *** snippet
+" ultisnip
 " https://github.com/SirVer/ultisnips
-" Plug 'SirVer/ultisnips'
-" }}} 
+Plug 'SirVer/ultisnips'
+" common snippets
+" https://github.com/honza/vim-snippets
+Plug 'honza/vim-snippets'
+
+" Debug startup performance
+" https://github.com/dstein64/vim-startuptime
+Plug 'dstein64/vim-startuptime'
 
 call plug#end()
 
 "}}}
 
 " Options {{{
+set laststatus=2
+
 set wrap                         " defualt on, wrap text if exceed the terminal window width
 set expandtab                    " get rid of tabs altogether and replace with spaces
 set autoindent                   " new line indent match the current one 
@@ -118,18 +89,14 @@ set whichwrap+=<,>,[,],h,l,~               " arrow keys can wrap in normal and i
 
 " set <Leader>
 let mapleader=","
-" Don't understand the following settings
-"set cscopequickfix=s-,c-,d-,i-,t-,e-,g-,f- " useful for cscope in quickfix
-"set tags+=./.tags;/,./tags;/               " set ctags
-" Suffixes that get lower priority when doing tab completion for filenames.
-" These are files I am not likely to want to edit or read
-"set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.class
 
-"plugin and indent setting for particular filetypes {{{
 " Turn on filetype plugins automatically 
+" https://vi.stackexchange.com/questions/10124/what-is-the-difference-between-filetype-plugin-indent-on-and-filetype-indent
 filetype plugin on
 filetype indent on
-"}}}
+
+" https://github.com/ryanoasis/vim-devicons
+set encoding=UTF-8
 
 " https://stackoverflow.com/questions/40141569/how-to-treat-a-makefile-with-another-name-in-vim
 autocmd Bufenter ~/.aliases set syntax=zsh
@@ -143,15 +110,27 @@ let &t_SI = "\<Esc>[5 q"    " I beam cursor for insert mode, SI = start insert
 syntax enable
 colorscheme gruvbox
 set termguicolors " enable true colors support
+
+" make alt key work 
+" source: https://github.com/dylnmc/placeholder.vim
+if !has('nvim') && !has('gui_running')
+    " allow M-{key} to be mapped properly in term vim
+    exe "set <m-r>=\<esc>r"
+    if exists(':tnoremap')
+        " fix above maps in terminal mode
+        tnoremap <m-r> <esc>r
+    endif
+endif
 " }}}
 
 " Key mapping {{{
-" Resource: https://vim.fandom.com/wiki/Mapping_keys_in_Vim_-_Tutorial_(Part_2)
-" - finding unused keys: map map!, verbose map <key>
-" - take advantage of function keys as those aren't used generally
-
 " paste latest yanked register content. Default p will replace anon register
 noremap <leader>p "0p
+nnoremap <leader>; ,
+" format paragraph
+" https://superuser.com/questions/275364/how-can-i-break-a-paragraph-into-sentences-with-vim
+vnoremap \f :s/\. /.<c-v><CR>/g<CR>
+
 " disable arrow keys in normal
 nnoremap <left> <nop>
 nnoremap <right> <nop>
@@ -170,8 +149,17 @@ nnoremap Y y$
 " switching between tabs: https://vim.fandom.com/wiki/Using_tab_pages
 nnoremap <C-Left> :tabprevious<CR>
 nnoremap <C-Right> :tabnext<CR>
-nnoremap <leader>t :tabnew<CR>
-" replace ctrl-P with fzf
+nnoremap <leader>t :call CreateNewTabWithSameFile()<CR>
+
+function! CreateNewTabWithSameFile()
+    if empty(@%)
+        tabnew
+    else
+        tabnew %
+    endif
+endfunction
+
+" replaced ctrl-P with fzf
 nnoremap <C-P> :Files<CR>
 " search for pattern from current working directory
 nnoremap <leader><C-P> :Rg 
@@ -189,35 +177,35 @@ inoremap <c-j> <c-o>gj
 inoremap <c-e> <c-o>$
 inoremap <c-a> <c-o>0
 
+nnoremap \ :call ToggleNerdFind()<CR>
+
+" https://learnvim.irian.to/vimscript/vimscript_variable_scopes
+" Buffer variable scope so multiple window's ToggleNerdFind doesn't run into each other
+au BufEnter * if !exists('b:acheamzNerdFindToggle') | let b:acheamzNerdFindToggle = 0 | endif
+
+function! ToggleNerdFind()
+    if b:acheamzNerdFindToggle
+        NERDTreeClose
+        let b:acheamzNerdFindToggle = 0
+    else
+        NERDTreeFind
+        let b:acheamzNerdFindToggle = 1
+    endif
+endfunction
+
 " https://vim.fandom.com/wiki/Detect_window_creation_with_WinEnter
 autocmd WinEnter * nnoremap <C-h> <C-w>h
 autocmd WinEnter * nnoremap <C-l> <C-w>l
-" The c-j conflicts with above, and I don't wanna map that to <CR>
-" since most times I'd just be editing two files vertically at same time not mapping the c-j
-" autocmd WinEnter * nnoremap <C-j> <C-w>j
-" autocmd WinEnter * nnoremap <C-k> <C-w>k
 
-" mapping alt key: https://vi.stackexchange.com/questions/2350/how-to-map-alt-key
-" A key with the Alt key modifier is represented using <A-key> or <M-key> notation 
-" Directly using that doesn't work, that's because both alt and esc emit ^[ 
-" One way to do is remap the alt to some other escape sequence (in link) but didnt work for me
-" Second way is just directly let vim interpret the ^[ as <Esc>. Note tho that this does not mean <Esc>+key == <Alt>+key
-" can check that on cat, compare alt+left with esc+left
-" Below maps Alt-left and Alt-right respectively for reorganizing tabs (idk how to add shift also in combination
+" alt left/right
 nnoremap <Esc>[1;3D :tabmove -1<CR>
 nnoremap <Esc>[1;3C :tabmove +1<CR>
 
-" https://vi.stackexchange.com/questions/7194/how-to-substitute-the-first-occurrence-across-the-whole-file " The below method somehow skips the current line during search
-"autocmd Filetype markdown nnoremap <leader>, :/ *<++>/s///<CR>A
-"autocmd Filetype markdown inoremap <leader>, <Esc>:/ *<++>/s///<CR>A
- 
-" if there's no character after <++> or is the <CR>, then cursor will be at character before < and i will start at position before that character 
-    " it's this behavior cuz cursor can't be on <CR>
-" if there's character after, then cursor will be at < and start before it (behavior we want).
-    " this is the case of link and anytime we want to insert snippet in middle of sentence
-" just live with former case. make replacing place holder string not limited to only markdown
-nnoremap <leader>, /<++>/<CR>vf>di
-inoremap <leader>, <Esc>/<++>/<CR>vf>di
+nnoremap <m-r> /<++>/<CR>vf>di
+inoremap <m-r> <Esc>/<++>/<CR>vf>di
+
+" apply macros to set of lines: https://stackoverflow.com/questions/390174/in-vim-how-do-i-apply-a-macro-to-a-set-of-lines
+vnoremap <leader>m :norm! @
 " }}}
 
 "{{{ Autocmd (Common)
@@ -233,43 +221,24 @@ augroup end
 " File Types {{{ 
 
 " Markdown {{{
-" From youtube: https://www.youtube.com/watch?v=9Bb8Ljyqpt4
-" [rR]md is the R Markdown file format, I don't use it so will omit
 augroup md
     au!
-    " autocmd Filetype markdown nnoremap <leader>td 0i- [ ] <Esc> 
-    autocmd Filetype markdown inoremap <leader>td <c-o>0- [ ] <c-o>$
-    autocmd Filetype markdown inoremap <leader>s ~~~~ <++><Esc>F~hi
-    " autocmd Filetype markdown map <leader>w yiWi[<Esc>Ea](<Esc>pa)
-    autocmd Filetype markdown inoremap <leader>n ---<CR><CR>
-    autocmd Filetype markdown inoremap <leader>i ** <++><Esc>F*i
-    autocmd Filetype markdown inoremap <leader>b **** <++><Esc>F*hi
-    " https://www.markdownguide.org/extended-syntax/#footnotes
-    autocmd Filetype markdown inoremap <leader>fn [^]<Esc>F[la
-    autocmd Filetype markdown inoremap <leader>l [](<++>) <++><Esc>F[a
-    autocmd Filetype markdown inoremap <leader>1 #<Space><CR><CR><++><Esc>2kA
-    autocmd Filetype markdown inoremap <leader>2 ##<Space><CR><CR><++><Esc>2kA
-    autocmd Filetype markdown inoremap <leader>3 ###<Space><CR><CR><++><Esc>2kA
-    autocmd Filetype markdown inoremap <leader>4 ####<Space><CR><CR><++><Esc>2kA
-    autocmd Filetype markdown inoremap <leader>5 #####<Space><CR><CR><++><Esc>2kA
-    autocmd Filetype markdown inoremap <leader>6 ######<Space><CR><CR><++><Esc>2kA
-    
-"------------------------------------------------------------------------------"
-"                             Vimwiki Markdown Cmd                             "
-"------------------------------------------------------------------------------"
-
-    " TODO: migrate those to ulti-snip later
-    " Want question to be able to created from any vim buffer
-    nnoremap <leader>qs i#<Space><++><Space><CR><CR>**Link:** <++> <CR><CR>##<Space>Description: <CR><CR><++> <CR><CR>##<Space>Answer: <CR><CR><++><Esc>gg
-    " Not really needed with the template script
-    autocmd FileType markdown nnoremap <leader>diary i#<Space><++><Space><CR><CR><++><CR><CR>##<Space>DevLog<CR><CR><++><CR><CR><Esc>gg
-    autocmd FileType markdown nnoremap <leader>note i#<Space><++><Space><CR><CR>##<Space>Explain<CR><CR><++><CR><CR>##<Space>Documentation<CR><CR><CR><CR>##<Space>Code<CR><CR>```<CR>```<Esc>gg
-    autocmd Filetype markdown inoremap <leader>now *<CR><Esc>!!date<CR>A*<Esc>kJxA<CR><CR>
+    let maplocalleader="\<Space>"
+    " delete link, maybe move this to visual mode
+    autocmd Filetype markdown nnoremap <localleader>dl F[xf]xvf)d
+    " https://vim.fandom.com/wiki/Mapping_keys_in_Vim_-_Tutorial_(Part_1)#Visual_mode_maps
+    " modify around selected block of text
+    autocmd Filetype markdown vnoremap <leader>b <Esc>`>a**<Esc>`<i**<Esc>
+    autocmd Filetype markdown vnoremap <leader>i <Esc>`>a*<Esc>`<i*<Esc>
+    " Add link, the vimwiki enter is great for generating new wiki but not for inserting link
+    autocmd Filetype markdown vnoremap <leader>l <Esc>`<i[<Esc>`>a](<++>)<Esc>
+    autocmd Filetype markdown vnoremap <leader>c <Esc>`<i`<Esc>`>a`<Esc>
+    autocmd Filetype markdown vnoremap <leader>,c c```<CR>```<Esc>kp
+    " underline is not supported in markdown
 augroup end
 " }}}
 
 " Vim {{{
-" why use augroup: https://vi.stackexchange.com/questions/9455/why-should-i-use-augroup
 augroup ft_vim
     " au! = autocmd!
     au! 
@@ -280,70 +249,46 @@ augroup ft_vim
     " https://superuser.com/questions/271023/can-i-disable-continuation-of-comments-to-the-next-line-in-vim
     au filetype vim setlocal formatoptions-=cro
 augroup end
-
 "}}}
 
 " }}}
 
-"{{{ Notable
-command Notable call s:notable_header()
-
-" ! after function https://vi.stackexchange.com/questions/18782/exclamation-mark-after-autocommands
-function s:notable_header()
-    " return the note header for notable
-    " %F = %Y-%m-%d
-    let creationTime = s:zulu_time()
-    " https://vim.fandom.com/wiki/Get_the_name_of_the_current_file
-    let fileName = expand('%:t:r')
-    " '.' is the concatenation operator https://learnvimscriptthehardway.stevelosh.com/chapters/26.html
-    let headers = ["---", "tags: []", "title: ".fileName, "created: '".creationTime."'", "modified: '".creationTime."'", "---"]
-    " https://learnvimscriptthehardway.stevelosh.com/chapters/19.html#registers-as-variables
-    let @"=join(headers,"\n")
-    normal! p
-endfunction
-
-function s:zulu_time()
-    " return UTC time, change if microsecond needed
-    " date micro second not implemented on OSX
-    " system(cmd) returns the result of command (string) but appends a newline 
-    " systemlist(cmd) return the result in list
-    " [:] string slicing 
-    return system('date -u "+%Y-%m-%dT%H:%M:%S.000Z"')[:-2] " upperbound is inclusive 
-endfunction
-" }}}
-
 " Vimwiki {{{
-    " append to this list so each path becomes its own wiki
+
+    " Options {{{
+    " Append to this list so each path becomes its own wiki. 
     let g:vimwiki_list = [
-                \{'path': '~/vimwiki', 'syntax': 'markdown', 'ext': '.md'}]
-                "\{'path': '~/vimwiki/linux', 'syntax': 'markdown', 'ext': '.md'}]
+                \{'path': '~/vimwiki', 'syntax': 'markdown', 'ext': '.md'}] 
     let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown', '.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
     " Makes vimwiki markdown links as [text](text.md) instead of [text](text)
     let g:vimwiki_markdown_link_ext = 1
 
     let g:taskwiki_markup_syntax = 'markdown'
     let g:markdown_folding = 1
+    "}}}
 
     " Custom Commands & Functions{{{
     """ this function generates a list of links in curr directory and first sub directory index
     command VimwikiGenerateCurrDirLinks call s:vimwiki_curr_dir_links()
     
     function s:vimwiki_curr_dir_links()
-        " get current dir non-index wikis
+        " get current dir non-index wikis, remove ./ prefix
         " https://unix.stackexchange.com/questions/55359/how-to-run-grep-with-multiple-and-patterns
         let l1_files = system('find . -mindepth 1 -maxdepth 1 -not -path "*/.*" -type f | awk "!/index\.md/ && /\.md/" | cut -c 3-')
         " only get immediate subdirectories index wiki
         let l2_files = system('find . -mindepth 2 -maxdepth 2 -not -path "*/.*" -type f | grep "index.md" | cut -c 3-')
+
+        " TODO: use # title as link name
         for file in split(l1_files, "\n")
             " remove .md
-            let l = "[".file[:-4]."](".file.")"
+            let l = "["..file[:-4].."]("..file..")"
             put! =l
         endfor
         
         for file in split(l2_files, "\n")
             " use directory name as name of link
             let dir_name = split(file, "/")[0]
-            let l = "[".dir_name."](".file.")"
+            let l = "["..dir_name.."]("..file..")"
             put! =l
         endfor
     endfunction
@@ -358,60 +303,106 @@ endfunction
         " execute('normal gg/#\<cr>y$') :execute 'normal gg/#\<cr>y$'
         " clear register t
         call setreg("t", [])
-        :execute "normal gg/#\<cr>\"ty$"
+        :execute "normal gg/^# \<cr>\"ty$"
         let title = @t
-        let title = system("sed -e 's/[#\*\?\@\!\$\%\^\&\*\(\)\~]//g' -e 's/^ *//g' -e 's/ /_/g' <<<\"".title."\"")[:-2]
+        " Strip special characters, leading, trailing white space, join in between white space with _
+        let title = system("sed -r -e 's/[#\*\?\@\!\$\%\^\&\*\(\)\~]//g' -e 's/^[ \t]*//g' -e 's/[ \t]*$//g' -e 's/[ \t]+/_/g'<<<\""..title.."\"")[:-2]
         " do fnameescape to escape special characters just to be safe
-        silent execute "file ".a:path."/".fnameescape(title).".md"
+        silent execute "file "..a:path.."/"..fnameescape(title)..".md"
     endfunction
+
+    function! JumpToParentIndex() abort
+        " https://vim.fandom.com/wiki/Get_the_name_of_the_current_file
+        " https://learnvimscriptthehardway.stevelosh.com/chapters/22.html
+        let isIndex = expand('%:t') ==# "index.md"
+        " https://vi.stackexchange.com/questions/20304/vimscript-to-search-recursively-in-parents-directory-for-the-existence-of-a-file
+        " :h file-searching for second arg's syntax
+        let parentIndex = isIndex ? findfile("index.md", "..;~/vimwiki") : findfile("index.md", ".;~/vimwiki")
+        echo parentIndex
+        if empty(parentIndex)
+            return
+        endif
+        exe ":w | :e ".parentIndex
+    endfunction
+
+    " support completion of tags and completion of file links
+    function! FZFDictionaryComplete(root) abort
+        " check current line, if begins with tags: []
+        let line = getline(".")
+        let word = expand("<cword>")
+        let isTag = line =~# '^tags: ['
+        let isLink = word =~# '[(]\@!)*]('
+        if (isTag)
+            return execute("call fzf#vim#complete('cat "..a:root.."/.vimwiki/tags')")
+        elseif (isLink)
+            " find all files under root, remove root prefix, feed stdout to fzf
+            let exclude = ["-path "..a:root.."/diary", a:root.."/.obsidian", a:root.."/.vimwiki"] 
+            let cmd = "'prefix=\""..a:root.."\" && find "..a:root.." \\( "..join(exclude, " -o -path ").." \\) -prune -o -type f -name \"*.md\" -print | while read file; do echo ${file/#$prefix}; done'"
+            echom cmd
+            return execute("call fzf#vim#complete("..cmd..")")
+        else
+            " return normal dictionary map expression call?
+            return ''
+        endif 
+    endfunction
+
     " }}}
 
-" If I want to use variable in mapping I have to do :exe 'map '.l:variable'something'
-" let l:vimwiki_path = '~/vimwiki'
-
-" tip to debug mapping:
-" search mapping -> :verbose map
 augroup vim_wiki
     au! 
+    " TODO: can consider moving sections here to after/ftplugin... 
+
+    " required for ultisnip to work: https://github.com/vimwiki/vimwiki/issues/357
+    let g:vimwiki_table_mappings = 0
+
+    " https://vi.stackexchange.com/questions/28110/can-i-use-a-variable-in-autocmd-pat
+    " if I specify ~/vimwiki as environment variable and use it as argument to bufread, then vim is not going to interpret ~ (i.e. it's not gonna glob). 
+    " So need to pass absolute path here. Check :h aupat
+    let $VIMWIKI_ROOT = '/home/andrew/vimwiki'
+    let $VIMWIKI_DIARY_ROOT = $VIMWIKI_ROOT .. "/diary"
+
+    " seems that vimwiki defines its own filetype. merge md snippet and vimwiki snippets take precedence over md
+    autocmd Filetype vimwiki :UltiSnipsAddFiletypes vimwiki.md
     " https://stackoverflow.com/questions/2437777/with-vim-how-can-i-use-autocmds-for-files-in-subdirectories-of-a-specific-path
-    autocmd BufRead,BufNewFile ~/vimwiki/* nnoremap <C-P> :Files ~/vimwiki/<CR>
+    autocmd Filetype vimwiki nnoremap <C-P> :Files $VIMWIKI_ROOT<CR>
+    autocmd Filetype vimwiki nnoremap <leader><CR> :VimwikiTabnewLink<CR>
     " https://github.com/junegunn/fzf.vim/issues/837
     " :h user-functions -> !, replaces a function if one already exists
     command! -bang -nargs=* VimwikiRg
-  \ call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, fzf#vim#with_preview({'dir': "~/vimwiki"}), <bang>0)
-    autocmd BufRead,BufNewFile ~/vimwiki/* nnoremap <leader><C-P> :VimwikiRg 
-    " remove a link
-    autocmd BufRead,BufNewFile ~/vimwiki/* nnoremap <leader><CR> F[xf]xvf)d
-    autocmd BufRead,BufNewFile ~/vimwiki/* nmap <C-x> <Plug>VimwikiToggleListItem
+  \ call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case "..shellescape(<q-args>), 1, fzf#vim#with_preview({'dir': $VIMWIKI_ROOT}), <bang>0)
+    autocmd Filetype vimwiki nnoremap <leader><C-P> :VimwikiRg 
+    autocmd Filetype vimwiki nnoremap <leader><BS> :call JumpToParentIndex()<CR>
+    autocmd Filetype vimwiki nmap <C-x> <Plug>VimwikiToggleListItem
     " let vim change the cwd for VimwikiGenerateCurrDirLinks to work
     if exists('+autochdir')
-        autocmd BufRead,BufNewFile ~/vimwiki/* set autochdir
+        autocmd Filetype vimwiki set autochdir
     endif
-    """ Questions 
 
     " sq == save question
-    " Note: for the below, the '|' needs to be escaped otherewise it causes problem for some reason
-    " nnoremap <leader>sq :execute 'call SetFileNameToTitleMd("~/vimwiki/dev/questions") \| w'<CR>
-    nnoremap <leader>sq :call SetFileNameToTitleMd("~/vimwiki/dev/questions") \| w<CR>
+    nnoremap <leader>sq :call SetFileNameToTitleMd($VIMWIKI_ROOT.."/dev/questions") \| w<CR>
 
-    " do ":h :r" and go to :[range]r[ead] [++opt] !{cmd}
+    if filereadable($VIMWIKI_ROOT.."/.vimwiki/tags")
+        autocmd Filetype vimwiki inoremap <expr> <c-x><c-k> FZFDictionaryComplete($VIMWIKI_ROOT)
+    endif
+
     " only generate diary template if it's new file
     " http://frostyx.cz/posts/vimwiki-diary-template
-    au BufNewFile ~/vimwiki/diary/*.md :silent 0r !~/.vim/bin/generate-vimwiki-diary-template.py '%'
+    au BufNewFile $VIMWIKI_DIARY_ROOT/*.md :silent 0r !~/.vim/bin/generate-vimwiki-diary-template.py '%'
 augroup end 
 " }}}
 
 " Goyo {{{
 
 " https://www.youtube.com/watch?v=2cIdnfT5zxA
-let g:goyo_width = 90
+let g:goyo_width = '80%'
+let g:goyo_height = '90%'
 " larger -> more contrast
 let g:limelight_default_coefficient = 0.7
 " highlight more than current paragraph (i.e. surrounding paragraph)
 " let g:limelight_paragraph_span = 1
 
 map <leader>gy :Goyo<CR>
-map <leader>ll :Limelight!!<CR>
+"map <leader>lime :Limelight!!<CR>
 " When enter goyo turn on limelight, custom event handler prob handled by
 " Goyo library 
 autocmd! User GoyoEnter Limelight
@@ -419,52 +410,14 @@ autocmd! User GoyoLeave Limelight!
 
 "}}}
 
-"Vim Airline {{{
+" Ultisnip {{{
+" Trigger configuration. You need to change this to something other than <tab> if you use one of the following:
+" - https://github.com/Valloric/YouCompleteMe
+" - https://github.com/nvim-lua/completion-nvim
+"let g:UltiSnipsExpandTrigger="<tab>"
 
-" airline https://github.com/vim-airline/vim-airline
-" airline theme: https://github.com/vim-airline/vim-airline-themes
-let g:airline_theme='simple'
+" let :UltiSnipsEdit split window.
+let g:UltiSnipsEditSplit="vertical"
 
 "}}}
 
-" Archive {{{
-" 
-" This adds a comment frame, but there's a plugin already for it that does better job
-"command CommentFrame call s:block(30)
-"
-"function s:block(n)
-"    " to use arg in command (not used here): 
-"    " https://vi.stackexchange.com/questions/9644/how-to-use-a-variable-in-the-expression-of-a-normal-command
-"    if (a:n < 4) 
-"        return
-"    endif
-"    let third = a:n/3
-"
-"    exe \":normal o\<esc>..kkk"
-"    exe \":normal a\"".repeat("=", a:n)."\"\n"
-"    exe \":normal a\"".repeat(" \", third)."\"\n"
-"    exe \":normal a\"".repeat("=", a:n)."\""
-"    exe \":normal kF\"".third."l"
-"    " why doesn't :normal i enter insert mode 
-"    " https://stackoverflow.com/questions/11587124/vim-why-doesnt-normal-i-enter-insert-mode
-"    :startinsert
-"endfunction
-"
-"
-" No idea what the followings are for
-" sit back and let autoformat happen automatically
-" yapf breaks
-"augroup autoformat_settings
-"  autocmd FileType bzl AutoFormatBuffer buildifier
-"  autocmd FileType c,cpp,proto,javascript,arduino AutoFormatBuffer clang-format
-"  autocmd FileType dart AutoFormatBuffer dartfmt
-"  autocmd FileType go AutoFormatBuffer gofmt
-"  autocmd FileType gn AutoFormatBuffer gn
-"  autocmd FileType html,css,sass,scss,less,json AutoFormatBuffer js-beautify
-"  autocmd FileType java AutoFormatBuffer google-java-format 
-"  " Alternative: autocmd FileType python AutoFormatBuffer yapf
-"  autocmd FileType python AutoFormatBuffer autopep8
-"  autocmd FileType rust AutoFormatBuffer rustfmt
-"  autocmd FileType vue AutoFormatBuffer prettier
-"augroup END
-" }}}
