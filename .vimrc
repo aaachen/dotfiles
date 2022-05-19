@@ -256,9 +256,14 @@ augroup end
 " Vimwiki {{{
 
     " Options {{{
+
+    " convention: path ending in '/' indicates a directory
+    let $VIMWIKI_ROOT = '/home/andrew/vimwiki/'
+    let $VIMWIKI_DIARY_ROOT = $VIMWIKI_ROOT .. "diary/"
+
     " Append to this list so each path becomes its own wiki. 
     let g:vimwiki_list = [
-                \{'path': '~/vimwiki', 'syntax': 'markdown', 'ext': '.md'}] 
+                \{'path': $VIMWIKI_ROOT, 'syntax': 'markdown', 'ext': '.md'}] 
     let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown', '.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
     " Makes vimwiki markdown links as [text](text.md) instead of [text](text)
     let g:vimwiki_markdown_link_ext = 1
@@ -268,14 +273,13 @@ augroup end
     "}}}
 
     " Custom Commands & Functions{{{
-    """ this function generates a list of links in curr directory and first sub directory index
     command VimwikiGenerateCurrDirLinks call s:vimwiki_curr_dir_links()
     
+    " generates a list of links in current directory and first sub directory index
     function s:vimwiki_curr_dir_links()
-        " get current dir non-index wikis, remove ./ prefix
-        " https://unix.stackexchange.com/questions/55359/how-to-run-grep-with-multiple-and-patterns
+        " get current directory non-index wikis, remove ./ prefix
         let l1_files = system('find . -mindepth 1 -maxdepth 1 -not -path "*/.*" -type f | awk "!/index\.md/ && /\.md/" | cut -c 3-')
-        " only get immediate subdirectories index wiki
+        " get immediate subdirectories index wiki
         let l2_files = system('find . -mindepth 2 -maxdepth 2 -not -path "*/.*" -type f | grep "index.md" | cut -c 3-')
 
         " TODO: use # title as link name
@@ -286,21 +290,19 @@ augroup end
         endfor
         
         for file in split(l2_files, "\n")
-            " use directory name as name of link
+            " use directory name as link name
             let dir_name = split(file, "/")[0]
             let l = "["..dir_name.."]("..file..")"
             put! =l
         endfor
     endfunction
-    
-    """ arg:path directory path. Should not end in '/'
-    " abort function if error, so subsequent commands are not executed
-    " https://vi.stackexchange.com/questions/29038/how-do-i-make-a-function-stop-when-an-error-occurs
-    function! SetFileNameToTitleMd(path) abort
-        " !!! Remember to escape special character in exec string !!!
-        " using ' doesn't allow for interpolation https://stackoverflow.com/questions/13435586/should-i-use-single-or-double-quotes-in-my-vimrc-file 
-        " so those don't work cuz the \ is interpreted literally
-        " execute('normal gg/#\<cr>y$') :execute 'normal gg/#\<cr>y$'
+
+    " TODO: insert front matter header (create new function that call sets title and tag, assuming cwd is correct)
+    command SaveQuestion call s:set_file_name_to_title_md($VIMWIKI_ROOT.."dev/questions/") | w
+    command SaveInbox call s:set_file_name_to_title_md($VIMWIKI_ROOT.."inbox/") | w
+
+    " arg:directory path
+    function! s:set_file_name_to_title_md(root) abort
         " clear register t
         call setreg("t", [])
         :execute "normal gg/^# \<cr>\"ty$"
@@ -308,24 +310,21 @@ augroup end
         " Strip special characters, leading, trailing white space, join in between white space with _
         let title = system("sed -r -e 's/[#\*\?\@\!\$\%\^\&\*\(\)\~]//g' -e 's/^[ \t]*//g' -e 's/[ \t]*$//g' -e 's/[ \t]+/_/g'<<<\""..title.."\"")[:-2]
         " do fnameescape to escape special characters just to be safe
-        silent execute "file "..a:path.."/"..fnameescape(title)..".md"
+        silent execute "file "..a:root..fnameescape(title)..".md"
     endfunction
 
     function! JumpToParentIndex() abort
-        " https://vim.fandom.com/wiki/Get_the_name_of_the_current_file
-        " https://learnvimscriptthehardway.stevelosh.com/chapters/22.html
         let isIndex = expand('%:t') ==# "index.md"
-        " https://vi.stackexchange.com/questions/20304/vimscript-to-search-recursively-in-parents-directory-for-the-existence-of-a-file
-        " :h file-searching for second arg's syntax
         let parentIndex = isIndex ? findfile("index.md", "..;~/vimwiki") : findfile("index.md", ".;~/vimwiki")
         echo parentIndex
         if empty(parentIndex)
             return
         endif
-        exe ":w | :e ".parentIndex
+        exe ":w | :e "..parentIndex
     endfunction
 
-    " support completion of tags and completion of file links
+    " dictionary complete for a wiki folder. Support completion of tags and completion of file links
+    " arg: wiki root directory path
     function! FZFDictionaryComplete(root) abort
         " check current line, if begins with tags: []
         let line = getline(".")
@@ -333,12 +332,11 @@ augroup end
         let isTag = line =~# '^tags: ['
         let isLink = word =~# '[(]\@!)*]('
         if (isTag)
-            return execute("call fzf#vim#complete('cat "..a:root.."/.vimwiki/tags')")
+            return execute("call fzf#vim#complete('cat "..a:root..".vimwiki/tags')")
         elseif (isLink)
             " find all files under root, remove root prefix, feed stdout to fzf
-            let exclude = ["-path "..a:root.."/diary", a:root.."/.obsidian", a:root.."/.vimwiki"] 
-            let cmd = "'prefix=\""..a:root.."\" && find "..a:root.." \\( "..join(exclude, " -o -path ").." \\) -prune -o -type f -name \"*.md\" -print | while read file; do echo ${file/#$prefix}; done'"
-            echom cmd
+            let exclude = ["-path "..a:root.."diary", a:root..".obsidian", a:root..".vimwiki"] 
+            let cmd = "'prefix=\""..a:root.."\" && find "..a:root.." \\( "..join(exclude, " -o -path ").." \\) -prune -o -type f -name \"*.md\" -print | while read file; do echo \"\/\"${file/#$prefix}; done'"
             return execute("call fzf#vim#complete("..cmd..")")
         else
             " return normal dictionary map expression call?
@@ -351,15 +349,8 @@ augroup end
 augroup vim_wiki
     au! 
     " TODO: can consider moving sections here to after/ftplugin... 
-
     " required for ultisnip to work: https://github.com/vimwiki/vimwiki/issues/357
     let g:vimwiki_table_mappings = 0
-
-    " https://vi.stackexchange.com/questions/28110/can-i-use-a-variable-in-autocmd-pat
-    " if I specify ~/vimwiki as environment variable and use it as argument to bufread, then vim is not going to interpret ~ (i.e. it's not gonna glob). 
-    " So need to pass absolute path here. Check :h aupat
-    let $VIMWIKI_ROOT = '/home/andrew/vimwiki'
-    let $VIMWIKI_DIARY_ROOT = $VIMWIKI_ROOT .. "/diary"
 
     " seems that vimwiki defines its own filetype. merge md snippet and vimwiki snippets take precedence over md
     autocmd Filetype vimwiki :UltiSnipsAddFiletypes vimwiki.md
@@ -379,9 +370,9 @@ augroup vim_wiki
     endif
 
     " sq == save question
-    nnoremap <leader>sq :call SetFileNameToTitleMd($VIMWIKI_ROOT.."/dev/questions") \| w<CR>
+    nnoremap <leader>sq :call SetFileNameToTitleMd($VIMWIKI_ROOT.."dev/questions") \| w<CR>
 
-    if filereadable($VIMWIKI_ROOT.."/.vimwiki/tags")
+    if filereadable($VIMWIKI_ROOT..".vimwiki/tags")
         autocmd Filetype vimwiki inoremap <expr> <c-x><c-k> FZFDictionaryComplete($VIMWIKI_ROOT)
     endif
 
