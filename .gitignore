@@ -14,6 +14,3 @@
 
 .editorconfig
 .vscode
-
-vim/autoload/*
-vim/plugged/*
