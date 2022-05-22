@@ -22,5 +22,6 @@ alias v="vim"
 alias vw="vim ~/vimwiki/index.md"
 alias vq="vim ~/vimwiki/dev/questions/"
 alias o="xdg-open"
+alias open="xdg-open"
 
 # alias ctags="`brew --prefix`/bin/ctags"

@@ -1,0 +1,76 @@
+snippet i "italic"
+*${1:text}*
+endsnippet
+
+snippet b "bold"
+**${1:text}**
+endsnippet
+
+snippet fn "footnote"
+[^${1:footnote}]
+endsnippet
+
+snippet l "link"
+[${1:linkname}](${2:link}) $0
+endsnippet
+
+snippet c "code"
+\`${1}\`
+endsnippet
+
+snippet cb "code block" b
+\`\`\`${0}
+${1}
+\`\`\`
+endsnippet
+
+snippet 1 "h1" b
+# ${1:title}
+
+$0
+endsnippet
+
+snippet 2 "h2" b
+## ${1:title}
+
+$0
+endsnippet
+
+snippet 3 "h3" b
+### ${1:title}
+
+$0
+endsnippet
+
+snippet 4 "h4" b
+#### ${1:title}
+
+$0
+endsnippet
+
+snippet 5 "h5" b
+##### ${1:title}
+
+$0
+endsnippet
+
+snippet 6 "h6" b
+###### ${1:title}
+
+$0
+endsnippet
+
+snippet "st" "strike through"
+~~${1:text}~~
+endsnippet
+
+snippet nl "new line" b
+---
+
+${1:text}
+endsnippet
+
+snippet now "now"
+`date`
+endsnippet
+

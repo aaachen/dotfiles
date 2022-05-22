@@ -2,6 +2,12 @@
 "https://github.com/aaachen
 
 "Vim-Plug {{{
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
 " all those plugs are appended to runtimepath - echo &runtimepath
 call plug#begin('~/.vim/plugged')
 " status line (70 -> ~90 ms start time): 
@@ -97,9 +103,6 @@ filetype indent on
 
 " https://github.com/ryanoasis/vim-devicons
 set encoding=UTF-8
-
-" https://stackoverflow.com/questions/40141569/how-to-treat-a-makefile-with-another-name-in-vim
-autocmd Bufenter ~/.aliases set syntax=zsh
 
 " Cursor
 let &t_EI = "\<Esc>[2 q"    " block cursor for normal mode
@@ -348,7 +351,7 @@ augroup end
 
 augroup vim_wiki
     au! 
-    " TODO: can consider moving sections here to after/ftplugin... 
+    " TODO: move sections here to after/ftplugin... 
     " required for ultisnip to work: https://github.com/vimwiki/vimwiki/issues/357
     let g:vimwiki_table_mappings = 0
 
@@ -379,6 +382,8 @@ augroup vim_wiki
     " only generate diary template if it's new file
     " http://frostyx.cz/posts/vimwiki-diary-template
     au BufNewFile $VIMWIKI_DIARY_ROOT/*.md :silent 0r !~/.vim/bin/generate-vimwiki-diary-template.py '%'
+    
+
 augroup end 
 " }}}
 

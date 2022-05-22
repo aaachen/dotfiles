@@ -1,0 +1,80 @@
+# the below two can be used somewhat interchangeably, cuz the idea of "atomic" can be somewhat flexible
+# for atomic concepts
+snippet "co(ncept)?" "concept" br
+## Explain
+${1}
+
+## Documentation
+${2}
+
+endsnippet
+
+# for entries that comprise of atomic concepts
+snippet "ov(erview)?" "overview" br
+## Overview
+${1}
+
+## Documentation
+${2}
+
+endsnippet
+
+snippet code "code section" b
+## Code
+\`\`\`${0}
+${1}
+\`\`\`
+
+endsnippet
+
+# use parent directory name as default tag
+global !p
+import os
+def get_default_tag(file_path):
+	parent_dir = os.path.abspath(file_path).split("/")[-2]
+	return parent_dir 
+endglobal
+
+snippet "new|file" "file with frontmatter" br
+---
+tags: [`!p snip.rv=get_default_tag(path)`]
+title: '$1'
+date: '`!p from datetime import date
+snip.rv=str(date.today())`'
+---
+# ${1:title} 
+
+$2
+endsnippet
+
+# TODO change this to populate title, if there's already 
+snippet md "frontmatter metadata only" b
+---
+tags: [`!p snip.rv=get_default_tag(path)`]
+title: '$1'
+date: '`!p from datetime import date
+snip.rv=str(date.today())`'
+---
+endsnippet
+
+snippet diary "diary" b
+`#!/usr/bin/env python3
+import sys
+import datetime
+
+template = """# {date}
+
+## TODOs
+
+- [ ] <++>
+
+## Notes & Dev Log
+
+<++>
+"""
+
+date = datetime.date.today()
+
+print(template.format(date=date))`
+
+endsnippet

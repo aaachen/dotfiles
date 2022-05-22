@@ -2,11 +2,14 @@
 #                                                    #    
 #        .zshrc                                      #    
 #        1. set oh-my-zsh settings                   #    
-#        2. source aliases in ~/.aliases             #    
+#        2. source aliases                           #    
 #        3. source everything else defined           # 
 #           in ~/.zshrc.pre-oh-my-zsh                # 
 #                                                    #
 ######################################################
+
+export DOTFILES="$HOME/dotfiles"
+# TODO: nuke the oh-my-zsh stuff and keep only one zshrc
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -121,7 +124,7 @@ done
 unset omz_alias_remove
 
 # source aliases
-. ~/.aliases
+. $DOTFILES/aliases.sh
 
 # source my configuration
-. ~/.zshrc.pre-oh-my-zsh
+. ~/dotfiles/.zshrc.pre-oh-my-zsh
