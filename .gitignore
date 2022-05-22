@@ -1,0 +1,19 @@
+.DS_Store
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+.fseventsd
+
+# Vim creates this hidden file on network drives
+# http://stackoverflow.com/questions/9850360/what-is-netrwhist
+.netrwhist
+
+.editorconfig
+.vscode
+
+vim/autoload/*
+vim/plugged/*
