@@ -1,102 +1,22 @@
-######################################################      
-#                                                    #    
-#        .zshrc                                      #    
-#        1. set oh-my-zsh settings                   #    
-#        2. source aliases                           #    
-#        3. source everything else defined           # 
-#           in ~/.zshrc.pre-oh-my-zsh                # 
-#                                                    #
-######################################################
+# .zshrc: interactive shell settings for zsh
 
-export DOTFILES="$HOME/dotfiles"
-# TODO: nuke the oh-my-zsh stuff and keep only one zshrc
+#############################
+#  oh-my-zsh configuration  #
+#############################
 
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
-# Suppress instant prompt warning 
-# typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
-
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-
-# Path to your oh-my-zsh installation.
-# not using absolute path here, as opposed to what's set during installation
-# export ZSH="/home/andrew/.oh-my-zsh"
 system_name="$(uname -s)"
 case "${system_name}" in
     Linux*)     export ZSH="/home/andrew/.oh-my-zsh";;
     Darwin*)    export ZSH="/User/Andrew/.oh-my-zsh";;
 esac
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+# Enable Powerlevel10k instant prompt. 
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to automatically update without prompting.
-# DISABLE_UPDATE_PROMPT="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
 plugins=(
     git 
     zsh-autosuggestions
@@ -109,22 +29,43 @@ source $ZSH/oh-my-zsh.sh
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# User configuration
+########################
+#  User configuration  #
+########################
 
-# remove all oh_my_zsh alias 
-# unalias -a
-# https://github.com/ohmyzsh/ohmyzsh/issues/10644
-#
-# remove all git aliases 
-# https://stackoverflow.com/questions/4168371/how-can-i-remove-all-text-after-a-character-in-bash
+# remove all oh_my_zsh git alias, currently doesn't support option to turn off
 omz_alias_remove=($(alias | grep "='git" | sed 's/=.*//g' | tr "\n" " " | tr -d "'"))
 for a in $omz_alias_remove; do
     unalias $a
 done
 unset omz_alias_remove
 
-# source aliases
-. $DOTFILES/aliases.sh
+# local, non-oh-my-zsh things
+export _ZSH="$HOME/dotfiles/zsh"
 
-# source my configuration
-. ~/dotfiles/.zshrc.pre-oh-my-zsh
+# zsh specific configuration files to source
+config_files=($_ZSH/*.zsh)
+
+for file in $config_files; do
+    source $file
+done
+
+# conda initialize
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/andrew/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/andrew/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/andrew/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/andrew/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+
+# fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# https://github.com/wfxr/forgit
+[ -f /usr/share/zsh/plugins/forgit-git/forgit.plugin.zsh ] && source /usr/share/zsh/plugins/forgit-git/forgit.plugin.zsh

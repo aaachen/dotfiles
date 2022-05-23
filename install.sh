@@ -1,76 +1,50 @@
-#!/usr/bin/env bash
-set -e
+#!/usr/bin/env zsh
 
-# TODO: tweek!!
-# source: https://github.com/captbaritone/dotfiles/blob/master/install.sh
+set -e 
 
-dotfilespath="$HOME/dotfiles"
+FILES=(vim vimrc zshenv zshrc)
 
-FILES=(\
-    bashrc \
-    gitconfig \
-    gitignore \
-    hyper.js \
-    tmux.conf \
-    vim \
-    vimrc \
-    zshenv \
-    zshrc \
-)
-
-# The destination path of a dotfile
-function dot_path () {
-    echo "$HOME/.$1"
+info () {
+  printf "\r  [ \033[00;34m..\033[0m ] $@\n"
 }
 
-# The destination path of a dotfile
-function local_path () {
-    echo "$HOME/.$1.local"
+success () {
+  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $@\n"
 }
 
-# Links the passed filename to its new location
+error () {
+  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $@\n"
+}
+
+# link name: ~/.$1 to target: $1
 function link () {
     local filename=$1
     if [[ ! -e $filename ]]; then
-        echo "$filename doesn't exist"
-        return
+        error "$filename to be linked doesn't exist"
+        exit 1
     fi
 
-    local path=$(dot_path $filename)
-    if [[ -f $path ]] && [[ ! -L $path ]]; then
-        local localpath=$(local_path $filename)
-        mv $path $localpath
-        echo "Moved: $path to $localpath"
+    local linkname="$HOME/.$filename"
+    # backup files that are not symlinks before (potentially?) overwriting them 
+    if [[ -e $linkname ]] && [[ ! -L $linkname ]]; then
+        error "$linkname exists and is not a symlink"
+        exit 1
     fi
 
-    if [[ -L $path ]]; then
-        echo "Ok: $path"
-    elif [[ ! -e $path ]]; then
-        echo "Linking: $filename to $path"
-        ln -s $PWD/$filename $path
-    fi
+    # override any existing symlinks, don't follow dir
+    ln -sfn $PWD/$filename $linkname
+    success "created $linkname symlink"
 }
 
-# Loops through and link all files without links
-function install_links () {
-    echo "Linking dotfiles into place:\n"
-    cd $dotfilespath
-    for FILE in ${FILES[@]}
-    do
-        link $FILE
-    done
-}
-
-install_links
-
-echo "Switching default shell to zsh"
-echo "If this fails on MacOS, read https://superuser.com/questions/362372/how-to-change-the-login-shell-on-mac-os-x-from-bash-to-zsh"
-chsh -s /bin/zsh
-
-echo "Running module install files:"
-find $dotfilespath -mindepth 2 -name 'install.sh' | while read FILE; do
-    echo $FILE
+# install sub modules
+find . -mindepth 2 -name 'install.sh' | while read FILE; do
+    info "running $FILE..."
     $FILE
 done
 
-echo "Installation complete!"
+# link
+info "linking ${(j: :)FILES}..."
+for FILE in ${FILES[@]}
+do
+    link $FILE
+done
