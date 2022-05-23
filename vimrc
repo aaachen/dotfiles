@@ -259,133 +259,35 @@ augroup end
 
 " Vimwiki {{{
 
-    " Options {{{
+" convention: path ending in '/' indicates a directory
+let $VIMWIKI_ROOT = '/home/andrew/vimwiki/'
+let $VIMWIKI_DIARY_ROOT = $VIMWIKI_ROOT .. "diary/"
 
-    " convention: path ending in '/' indicates a directory
-    let $VIMWIKI_ROOT = '/home/andrew/vimwiki/'
-    let $VIMWIKI_DIARY_ROOT = $VIMWIKI_ROOT .. "diary/"
+" Append to this list so each path becomes its own wiki. 
+let g:vimwiki_list = [{'path': $VIMWIKI_ROOT, 'syntax': 'markdown', 'ext': '.md'}] 
+let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown', '.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
+" Makes vimwiki markdown links as [text](text.md) instead of [text](text)
+let g:vimwiki_markdown_link_ext = 1
 
-    " Append to this list so each path becomes its own wiki. 
-    let g:vimwiki_list = [
-                \{'path': $VIMWIKI_ROOT, 'syntax': 'markdown', 'ext': '.md'}] 
-    let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown', '.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
-    " Makes vimwiki markdown links as [text](text.md) instead of [text](text)
-    let g:vimwiki_markdown_link_ext = 1
+let g:taskwiki_markup_syntax = 'markdown'
+let g:markdown_folding = 1
 
-    let g:taskwiki_markup_syntax = 'markdown'
-    let g:markdown_folding = 1
-    "}}}
+" TODO: insert front matter header (create new function that call sets title and tag, assuming cwd is correct)
+command SaveQuestion call s:set_file_name_to_title_md($VIMWIKI_ROOT.."dev/questions/") | w
+command SaveInbox call s:set_file_name_to_title_md($VIMWIKI_ROOT.."inbox/") | w
 
-    " Custom Commands & Functions{{{
-    command VimwikiGenerateCurrDirLinks call s:vimwiki_curr_dir_links()
-    
-    " generates a list of links in current directory and first sub directory index
-    function s:vimwiki_curr_dir_links()
-        " get current directory non-index wikis, remove ./ prefix
-        let l1_files = system('find . -mindepth 1 -maxdepth 1 -not -path "*/.*" -type f | awk "!/index\.md/ && /\.md/" | cut -c 3-')
-        " get immediate subdirectories index wiki
-        let l2_files = system('find . -mindepth 2 -maxdepth 2 -not -path "*/.*" -type f | grep "index.md" | cut -c 3-')
+" arg:directory path
+function! s:set_file_name_to_title_md(root) abort
+    " clear register t
+    call setreg("t", [])
+    :execute "normal gg/^# \<cr>\"ty$"
+    let title = @t
+    " Strip special characters, leading, trailing white space, join in between white space with _
+    let title = system("sed -r -e 's/[#\*\?\@\!\$\%\^\&\*\(\)\~]//g' -e 's/^[ \t]*//g' -e 's/[ \t]*$//g' -e 's/[ \t]+/_/g'<<<\""..title.."\"")[:-2]
+    " do fnameescape to escape special characters just to be safe
+    silent execute "file "..a:root..fnameescape(title)..".md"
+endfunction
 
-        " TODO: use # title as link name
-        for file in split(l1_files, "\n")
-            " remove .md
-            let l = "["..file[:-4].."]("..file..")"
-            put! =l
-        endfor
-        
-        for file in split(l2_files, "\n")
-            " use directory name as link name
-            let dir_name = split(file, "/")[0]
-            let l = "["..dir_name.."]("..file..")"
-            put! =l
-        endfor
-    endfunction
-
-    " TODO: insert front matter header (create new function that call sets title and tag, assuming cwd is correct)
-    command SaveQuestion call s:set_file_name_to_title_md($VIMWIKI_ROOT.."dev/questions/") | w
-    command SaveInbox call s:set_file_name_to_title_md($VIMWIKI_ROOT.."inbox/") | w
-
-    " arg:directory path
-    function! s:set_file_name_to_title_md(root) abort
-        " clear register t
-        call setreg("t", [])
-        :execute "normal gg/^# \<cr>\"ty$"
-        let title = @t
-        " Strip special characters, leading, trailing white space, join in between white space with _
-        let title = system("sed -r -e 's/[#\*\?\@\!\$\%\^\&\*\(\)\~]//g' -e 's/^[ \t]*//g' -e 's/[ \t]*$//g' -e 's/[ \t]+/_/g'<<<\""..title.."\"")[:-2]
-        " do fnameescape to escape special characters just to be safe
-        silent execute "file "..a:root..fnameescape(title)..".md"
-    endfunction
-
-    function! JumpToParentIndex() abort
-        let isIndex = expand('%:t') ==# "index.md"
-        let parentIndex = isIndex ? findfile("index.md", "..;~/vimwiki") : findfile("index.md", ".;~/vimwiki")
-        echo parentIndex
-        if empty(parentIndex)
-            return
-        endif
-        exe ":w | :e "..parentIndex
-    endfunction
-
-    " dictionary complete for a wiki folder. Support completion of tags and completion of file links
-    " arg: wiki root directory path
-    function! FZFDictionaryComplete(root) abort
-        " check current line, if begins with tags: []
-        let line = getline(".")
-        let word = expand("<cword>")
-        let isTag = line =~# '^tags: ['
-        let isLink = word =~# '[(]\@!)*]('
-        if (isTag)
-            return execute("call fzf#vim#complete('cat "..a:root..".vimwiki/tags')")
-        elseif (isLink)
-            " find all files under root, remove root prefix, feed stdout to fzf
-            let exclude = ["-path "..a:root.."diary", a:root..".obsidian", a:root..".vimwiki"] 
-            let cmd = "'prefix=\""..a:root.."\" && find "..a:root.." \\( "..join(exclude, " -o -path ").." \\) -prune -o -type f -name \"*.md\" -print | while read file; do echo \"\/\"${file/#$prefix}; done'"
-            return execute("call fzf#vim#complete("..cmd..")")
-        else
-            " return normal dictionary map expression call?
-            return ''
-        endif 
-    endfunction
-
-    " }}}
-
-augroup vim_wiki
-    au! 
-    " TODO: move sections here to after/ftplugin... 
-    " required for ultisnip to work: https://github.com/vimwiki/vimwiki/issues/357
-    let g:vimwiki_table_mappings = 0
-
-    " seems that vimwiki defines its own filetype. merge md snippet and vimwiki snippets take precedence over md
-    autocmd Filetype vimwiki :UltiSnipsAddFiletypes vimwiki.md
-    " https://stackoverflow.com/questions/2437777/with-vim-how-can-i-use-autocmds-for-files-in-subdirectories-of-a-specific-path
-    autocmd Filetype vimwiki nnoremap <C-P> :Files $VIMWIKI_ROOT<CR>
-    autocmd Filetype vimwiki nnoremap <leader><CR> :VimwikiTabnewLink<CR>
-    " https://github.com/junegunn/fzf.vim/issues/837
-    " :h user-functions -> !, replaces a function if one already exists
-    command! -bang -nargs=* VimwikiRg
-  \ call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case "..shellescape(<q-args>), 1, fzf#vim#with_preview({'dir': $VIMWIKI_ROOT}), <bang>0)
-    autocmd Filetype vimwiki nnoremap <leader><C-P> :VimwikiRg 
-    autocmd Filetype vimwiki nnoremap <leader><BS> :call JumpToParentIndex()<CR>
-    autocmd Filetype vimwiki nmap <C-x> <Plug>VimwikiToggleListItem
-    " let vim change the cwd for VimwikiGenerateCurrDirLinks to work
-    if exists('+autochdir')
-        autocmd Filetype vimwiki set autochdir
-    endif
-
-    " sq == save question
-    nnoremap <leader>sq :call SetFileNameToTitleMd($VIMWIKI_ROOT.."dev/questions") \| w<CR>
-
-    if filereadable($VIMWIKI_ROOT..".vimwiki/tags")
-        autocmd Filetype vimwiki inoremap <expr> <c-x><c-k> FZFDictionaryComplete($VIMWIKI_ROOT)
-    endif
-
-    " only generate diary template if it's new file
-    " http://frostyx.cz/posts/vimwiki-diary-template
-    au BufNewFile $VIMWIKI_DIARY_ROOT/*.md :silent 0r !~/.vim/bin/generate-vimwiki-diary-template.py '%'
-    
-
-augroup end 
 " }}}
 
 " Goyo {{{

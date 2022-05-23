@@ -35,9 +35,6 @@ alias gps='git push'
 alias grs='git reset'
 
 # Common shell functions
-alias l='less'
-alias lh='ls -alt | head' # see the last modified files
-
 alias k9='kill -9'
 
 # Homebrew
