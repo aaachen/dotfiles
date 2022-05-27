@@ -210,6 +210,11 @@ inoremap <m-r> <Esc>/<++>/<CR>vf>di
 
 " apply macros to set of lines: https://stackoverflow.com/questions/390174/in-vim-how-do-i-apply-a-macro-to-a-set-of-lines
 vnoremap <leader>m :norm! @
+
+" https://vim.fandom.com/wiki/Make_Vim_completion_popup_menu_work_just_like_in_an_IDE
+" use CR instead of <c-y> to select an item in completion
+" This may be unneeded when switch to use YouCompleteMe later on
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 " }}}
 
 "{{{ Autocmd (Common)
@@ -258,6 +263,9 @@ augroup end
 " }}}
 
 " Vimwiki {{{
+
+" required for ultisnip to work: https://github.com/vimwiki/vimwiki/issues/357
+let g:vimwiki_table_mappings = 0
 
 " convention: path ending in '/' indicates a directory
 let $VIMWIKI_ROOT = '/home/andrew/vimwiki/'
