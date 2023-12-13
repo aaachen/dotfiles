@@ -2,7 +2,7 @@
 
 set -e 
 
-FILES=(vim vimrc zshenv zshrc)
+FILES=(vim vimrc zshenv zshrc tmux.conf tmux.conf.local)
 
 info () {
   printf "\r  [ \033[00;34m..\033[0m ] $@\n"
