@@ -14,8 +14,6 @@ alias ll="ls -al -G"
 alias la="ls -aG"
 alias ,dm="docker-machine"
 alias v="vim"
-alias vw="vim ~/vimwiki/index.md"
-alias vq="vim ~/vimwiki/dev/questions/"
 # Git Aliases
 # Note: some may be taken over by forgit
 alias gs='git status'

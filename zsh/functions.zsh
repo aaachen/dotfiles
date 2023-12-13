@@ -15,3 +15,4 @@ function rgvim {
     choice=$(rg -il $@ | fzf -0 -1 --ansi --preview "cat {}")
     [[ ! -z "$choice" ]] && vim "+/"$@ $choice
 }
+

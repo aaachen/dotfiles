@@ -19,9 +19,10 @@ Plug 'itchyny/lightline.vim'
 Plug 'arzg/vim-colors-xcode'
 Plug 'morhetz/gruvbox'
 
+" 01/16/2023: Retiring vimwiki
 " vimwiki
 " https://github.com/vimwiki/vimwiki
-Plug 'vimwiki/vimwiki'
+" Plug 'vimwiki/vimwiki'
 
 " distraction free writing
 " https://github.com/junegunn/goyo.vim https://github.com/junegunn/limelight.vim
@@ -55,6 +56,8 @@ Plug 'honza/vim-snippets'
 " https://github.com/dstein64/vim-startuptime
 Plug 'dstein64/vim-startuptime'
 
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
+
 call plug#end()
 
 "}}}
@@ -68,7 +71,7 @@ set autoindent                   " new line indent match the current one
 set number
 set relativenumber               " set relative number in addition to line number (display current line number)
 
-set cindent                      " c code indenting
+"set cindent                      " c code indenting. Disabling as it removes intial indent when typing # comment 
 set foldcolumn=1                 " display fold column for folds 
 set foldmethod=marker
 set foldlevelstart=99            " open all fold initially
@@ -214,7 +217,16 @@ vnoremap <leader>m :norm! @
 " https://vim.fandom.com/wiki/Make_Vim_completion_popup_menu_work_just_like_in_an_IDE
 " use CR instead of <c-y> to select an item in completion
 " This may be unneeded when switch to use YouCompleteMe later on
+
+" This is overwritten by vimwikireturn. It is also passed as EunuchNewLine
 inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+function! s:set_writing_settings() abort
+    nnoremap j gj
+    nnoremap k gk
+endfunction
+
+au BufEnter /home/andrew/workspace/forest/* call s:set_writing_settings()
 " }}}
 
 "{{{ Autocmd (Common)
@@ -266,10 +278,12 @@ augroup end
 
 " required for ultisnip to work: https://github.com/vimwiki/vimwiki/issues/357
 let g:vimwiki_table_mappings = 0
+" required to not set filetype for all md: https://github.com/vimwiki/vimwiki/issues/95
+let g:vimwiki_global_ext = 0
 
 " convention: path ending in '/' indicates a directory
-let $VIMWIKI_ROOT = '/home/andrew/vimwiki/'
-let $VIMWIKI_DIARY_ROOT = $VIMWIKI_ROOT .. "diary/"
+" let $VIMWIKI_ROOT = '/home/andrew/vimwiki/'
+" let $VIMWIKI_DIARY_ROOT = $VIMWIKI_ROOT .. "diary/"
 
 " Append to this list so each path becomes its own wiki. 
 let g:vimwiki_list = [{'path': $VIMWIKI_ROOT, 'syntax': 'markdown', 'ext': '.md'}] 
@@ -308,7 +322,7 @@ let g:limelight_default_coefficient = 0.7
 " highlight more than current paragraph (i.e. surrounding paragraph)
 " let g:limelight_paragraph_span = 1
 
-map <leader>gy :Goyo<CR>
+map <leader>\ :Goyo<CR>
 "map <leader>lime :Limelight!!<CR>
 " When enter goyo turn on limelight, custom event handler prob handled by
 " Goyo library 
