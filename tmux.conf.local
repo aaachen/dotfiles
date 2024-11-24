@@ -373,6 +373,12 @@ tmux_conf_copy_to_os_clipboard=false
 # if you don't want Oh my tmux! to alter a binding, use #!important
 # bind c new-window -c '#{pane_current_path}' #!important
 
+# Adjust split binding to be same as my vim config 
+bind v split-window -h #important
+bind s split-window -v #important
+unbind '"'
+unbind %
+
 # move status line to top
 #set -g status-position top
 

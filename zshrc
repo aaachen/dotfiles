@@ -6,8 +6,11 @@
 
 system_name="$(uname -s)"
 case "${system_name}" in
-    Linux*)     export ZSH="/home/andrew/.oh-my-zsh";;
-    Darwin*)    export ZSH="/User/Andrew/.oh-my-zsh";;
+    Linux*)     
+        export ZSH="/home/andrew/.oh-my-zsh";;
+    Darwin*)    
+        export ZSH="/User/aaachen/.oh-my-zsh";;
+        eval "$(/opt/homebrew/bin/brew shellenv)"
 esac
 
 ZSH_THEME="powerlevel10k/powerlevel10k"
@@ -53,3 +56,10 @@ done
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+eval "$(/opt/homebrew/bin/brew shellenv)"
+# Set up mise for runtime management
+# eval "$(mise activate zsh)"
+# eval $(thefuck --alias)
+
+# nvm
+source /usr/share/nvm/init-nvm.sh

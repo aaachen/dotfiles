@@ -11,5 +11,12 @@ export PATH=$PATH:$HOME/.cargo/bin
 . "$HOME/.cargo/env"
 
 export PATH=$PATH:$HOME/.spicetify
-export PATH=$PATH:$HOME/bin
+# I don't make user script here
+# export PATH=$PATH:$HOME/bin
 
+export PATH=$HOME/.npm-global/bin:$PATH
+export PATH=$HOME/Applications:$PATH
+
+export f="/home/andrew/Dropbox/forest"
+export fu="/home/andrew/Dropbox/forest/Utilities"
+export fimg="/home/andrew/Dropbox/forest/Utilities/Images"

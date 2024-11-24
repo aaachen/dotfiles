@@ -14,8 +14,8 @@ alias ll="ls -al -G"
 alias la="ls -aG"
 alias ,dm="docker-machine"
 alias v="vim"
+
 # Git Aliases
-# Note: some may be taken over by forgit
 alias gs='git status'
 alias gstsh='git stash'
 alias gst='git stash'
@@ -31,6 +31,14 @@ alias gd='git diff'
 alias gplr='git pull --rebase'
 alias gps='git push'
 alias grs='git reset'
+
+# pacman
+alias orph='pacman -Qdtq'
+alias rmorph='pacman -Rs $(pacman -Qdtq)'
+
+# qrcp
+alias receive-phone-file='qrcp receive --output=/home/andrew/tmp/qrcp'
+alias send-phone-file='qrcp'
 
 # Common shell functions
 alias k9='kill -9'

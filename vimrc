@@ -47,10 +47,10 @@ Plug 'tpope/vim-eunuch'
 
 " ultisnip
 " https://github.com/SirVer/ultisnips
-Plug 'SirVer/ultisnips'
+" Plug 'SirVer/ultisnips'
 " common snippets
 " https://github.com/honza/vim-snippets
-Plug 'honza/vim-snippets'
+" Plug 'honza/vim-snippets'
 
 " Debug startup performance
 " https://github.com/dstein64/vim-startuptime
@@ -114,7 +114,9 @@ let &t_SR = "\<Esc>[3 q"    " underline cursor for replace mode
 let &t_SI = "\<Esc>[5 q"    " I beam cursor for insert mode, SI = start insert
 
 " Color Scheme
-syntax enable
+syntax on
+" for typescript file performance: https://jameschambers.co.uk/vim-typescript-slow
+set re=0
 colorscheme gruvbox
 set termguicolors " enable true colors support
 
@@ -144,9 +146,11 @@ nnoremap <right> <nop>
 nnoremap <down> <nop>
 nnoremap <up> <nop>
 "c-j - insert new line in normal mode without going into insert
-nnoremap <c-j> o<Esc>
+" nnoremap <c-j> o<Esc>
 " https://stackoverflow.com/questions/11993851/how-to-delete-not-cut-in-vim
-nnoremap <c-k> "_ddk
+" nnoremap <c-k> "_ddk
+
+
 " delete inline
 nnoremap dil 0D
 " yank inline
@@ -203,6 +207,8 @@ endfunction
 " https://vim.fandom.com/wiki/Detect_window_creation_with_WinEnter
 autocmd WinEnter * nnoremap <C-h> <C-w>h
 autocmd WinEnter * nnoremap <C-l> <C-w>l
+autocmd WinEnter * nnoremap <C-k> <C-w>k
+autocmd WinEnter * nnoremap <C-j> <C-w>j
 
 " alt left/right
 nnoremap <Esc>[1;3D :tabmove -1<CR>
