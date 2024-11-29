@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# in oh-my-zsh, this is a regular variable that's not exported, so re-defining it
+ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+
 set -e
 echo "Installing zsh pre-requisites"
 
@@ -13,15 +16,16 @@ then
         rm ~/.zshrc
         mv ~/.zshrc.pre-oh-my-zsh ~/.zshrc
     fi
-    if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions ]; then
-        echo "Installing autosuggestions plugin..."
-        git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-    fi
+fi
 
-    if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting ]; then
-        echo "Installing syntax highlighting plugins..."
-        git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
-    fi
+if [ ! -d ${ZSH_CUSTOM}/plugins/zsh-autosuggestions ]; then
+    echo "Installing autosuggestions plugin..."
+    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+fi
+
+if [ ! -d ${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting ]; then
+    echo "Installing syntax highlighting plugins..."
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
 fi
 
 echo "Done"

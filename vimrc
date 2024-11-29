@@ -58,6 +58,9 @@ Plug 'dstein64/vim-startuptime'
 
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 
+" Extended % support for html tags
+Plug 'https://github.com/adelarsq/vim-matchit'
+
 call plug#end()
 
 "}}}

@@ -37,7 +37,8 @@ function link () {
 }
 
 # install sub modules
-find . -mindepth 2 -name 'install.sh' | while read FILE; do
+# let vim plug install the vim dependencies
+find . -mindepth 2 -maxdepth 2 -name 'install.sh' | while read FILE; do
     info "running $FILE..."
     $FILE
 done
@@ -48,21 +49,4 @@ for FILE in ${FILES[@]}
 do
     link $FILE
 done
-
-# Oh my zsh
-if [ ! -d "$HOME/.oh-my-zsh" ]; then
-    echo "Oh My Zsh is not installed. Installing now..."
-    # Install Oh My Zsh
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-else
-    echo "Oh My Zsh is already installed."
-fi
-
-if [ ! -d "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting" ]; then
-    git clone https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting"
-fi
-
-if [ ! -d "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions" ]; then
-    git clone https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
-fi
 

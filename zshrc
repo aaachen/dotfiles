@@ -7,10 +7,12 @@
 system_name="$(uname -s)"
 case "${system_name}" in
     Linux*)     
-        export ZSH="/home/andrew/.oh-my-zsh";;
+        export ZSH="/home/andrew/.oh-my-zsh"
+        ;;
     Darwin*)    
-        export ZSH="/User/aaachen/.oh-my-zsh";;
+        export ZSH="/Users/aaachen/.oh-my-zsh"
         eval "$(/opt/homebrew/bin/brew shellenv)"
+        ;;
 esac
 
 ZSH_THEME="powerlevel10k/powerlevel10k"
@@ -62,4 +64,14 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 # eval $(thefuck --alias)
 
 # nvm
-source /usr/share/nvm/init-nvm.sh
+# source /usr/share/nvm/init-nvm.sh
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/aaachen/.lmstudio/bin"
+# End of LM Studio CLI section
+

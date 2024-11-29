@@ -17,6 +17,10 @@ export PATH=$PATH:$HOME/.spicetify
 export PATH=$HOME/.npm-global/bin:$PATH
 export PATH=$HOME/Applications:$PATH
 
-export f="/home/andrew/Dropbox/forest"
-export fu="/home/andrew/Dropbox/forest/Utilities"
-export fimg="/home/andrew/Dropbox/forest/Utilities/Images"
+# Created by `pipx` on 2025-03-24 04:37:42
+export PATH="$PATH:/Users/aaachen/.local/bin"
+
+export f="$HOME/Documents/forest"
+export fu="$HOME/Documents/forest/Utilities"
+export fimg="$HOME/Documents/forest/Utilities/Images"
+export GPG_TTY=$(tty)
