@@ -7,10 +7,10 @@
 system_name="$(uname -s)"
 case "${system_name}" in
     Linux*)     
-        export ZSH="/home/andrew/.oh-my-zsh"
+        export ZSH="${HOME}/.oh-my-zsh"
         ;;
     Darwin*)    
-        export ZSH="/Users/aaachen/.oh-my-zsh"
+        export ZSH="${HOME}/.oh-my-zsh"
         eval "$(/opt/homebrew/bin/brew shellenv)"
         ;;
 esac
@@ -58,7 +58,6 @@ done
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
 # Set up mise for runtime management
 # eval "$(mise activate zsh)"
 # eval $(thefuck --alias)
@@ -72,6 +71,6 @@ export NVM_DIR="$HOME/.nvm"
 
 
 # Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/aaachen/.lmstudio/bin"
+export PATH="$PATH:${HOME}/.lmstudio/bin"
 # End of LM Studio CLI section
 

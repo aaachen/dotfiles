@@ -18,9 +18,10 @@ export PATH=$HOME/.npm-global/bin:$PATH
 export PATH=$HOME/Applications:$PATH
 
 # Created by `pipx` on 2025-03-24 04:37:42
-export PATH="$PATH:/Users/aaachen/.local/bin"
+export PATH="$PATH:$HOME/.local/bin"
 
 export f="$HOME/Documents/forest"
 export fu="$HOME/Documents/forest/Utilities"
 export fimg="$HOME/Documents/forest/Utilities/Images"
+# https://github.com/keybase/keybase-issues/issues/2798
 export GPG_TTY=$(tty)
