@@ -10,15 +10,15 @@
 export PATH=$PATH:$HOME/.cargo/bin
 . "$HOME/.cargo/env"
 
-export PATH=$PATH:$HOME/.spicetify
-# I don't make user script here
-# export PATH=$PATH:$HOME/bin
+# Spotify client
+# export PATH=$PATH:$HOME/.spicetify
+
+# custom user commands
+export PATH=$PATH:$HOME/bin
+export PATH=$PATH:$HOME/bin/stow
+export PATH="$PATH:$HOME/.local/bin"
 
 export PATH=$HOME/.npm-global/bin:$PATH
-export PATH=$HOME/Applications:$PATH
-
-# Created by `pipx` on 2025-03-24 04:37:42
-export PATH="$PATH:$HOME/.local/bin"
 
 export f="$HOME/Documents/forest"
 export fu="$HOME/Documents/forest/Utilities"
