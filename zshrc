@@ -74,3 +74,9 @@ export NVM_DIR="$HOME/.nvm"
 export PATH="$PATH:${HOME}/.lmstudio/bin"
 # End of LM Studio CLI section
 
+# Keychain
+if type "keychain" > /dev/null; then 
+    # https://serverfault.com/questions/672346/straight-forward-way-to-run-ssh-agent-and-ssh-add-on-login-via-ssh
+    eval $(keychain -q --eval id_ed25519);
+fi
+

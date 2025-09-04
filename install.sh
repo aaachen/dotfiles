@@ -26,7 +26,12 @@ function link () {
 
     local linkname="$HOME/.$filename"
     # backup files that are not symlinks before (potentially?) overwriting them 
-    if [[ -e $linkname ]] && [[ ! -L $linkname ]]; then
+    # Special handling for zshrc: backup if it exists
+    if [[ $filename == "zshrc" ]] && [[ -e $linkname ]]; then
+        local timestamp=$(date +%Y%m%d%H%M%S)
+        mv "$linkname" "$linkname.backup.$timestamp"
+        info "backed up existing $linkname to $linkname.backup.$timestamp"
+    elif [[ -e $linkname ]] && [[ ! -L $linkname ]]; then
         error "$linkname exists and is not a symlink"
         exit 1
     fi
