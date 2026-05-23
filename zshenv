@@ -8,7 +8,6 @@
 
 # rust cargo bin
 export PATH=$PATH:$HOME/.cargo/bin
-. "$HOME/.cargo/env"
 
 # Spotify client
 # export PATH=$PATH:$HOME/.spicetify
