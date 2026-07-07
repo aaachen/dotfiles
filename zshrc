@@ -59,7 +59,7 @@ done
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # Set up mise for runtime management
-# eval "$(mise activate zsh)"
+eval "$(mise activate zsh)"
 # eval $(thefuck --alias)
 
 # nvm
@@ -77,6 +77,10 @@ export PATH="$PATH:${HOME}/.lmstudio/bin"
 # Keychain
 if type "keychain" > /dev/null; then 
     # https://serverfault.com/questions/672346/straight-forward-way-to-run-ssh-agent-and-ssh-add-on-login-via-ssh
-    eval $(keychain -q --eval id_ed25519);
+    eval $(keychain -q --eval --noask id_ed25519);
 fi
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/home/aaachen/.lmstudio/bin"
+# End of LM Studio CLI section
 

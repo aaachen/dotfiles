@@ -1,0 +1,14 @@
+{
+  "pm": {
+    "common": ["yazi"],
+    "arch": [
+      "ttf-jetbrains-mono-nerd"
+    ],
+    "debian": [],
+    "fedora": []
+  },
+  "flatpak": [
+    "com.discordapp.Discord"
+  ],
+  "snap": []
+}

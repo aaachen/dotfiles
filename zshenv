@@ -19,8 +19,17 @@ export PATH="$PATH:$HOME/.local/bin"
 
 export PATH=$HOME/.npm-global/bin:$PATH
 
+# Obsidian
 export f="$HOME/Documents/forest"
 export fu="$HOME/Documents/forest/Utilities"
 export fimg="$HOME/Documents/forest/Utilities/Images"
+
+# Config
+export c="$HOME/.config"
+export hc="$HOME/.config/hypr"
+
+# Workspace
+export w="$HOME/workspace"
+
 # https://github.com/keybase/keybase-issues/issues/2798
 export GPG_TTY=$(tty)

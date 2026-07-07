@@ -48,10 +48,28 @@ find . -mindepth 2 -maxdepth 2 -name 'install.sh' | while read FILE; do
     $FILE
 done
 
+# manage apps
+if [[ -f "./manage_apps.py" ]]; then
+    info "running manage_apps.py..."
+    ./manage_apps.py
+fi
+
 # link
 info "linking ${(j: :)FILES}..."
 for FILE in ${FILES[@]}
 do
     link $FILE
 done
+
+check_shell () {
+  local current_shell=$(getent passwd $USER | cut -d: -f7)
+  if [[ "$current_shell" != "/usr/bin/zsh" ]] && [[ "$current_shell" != "/bin/zsh" ]]; then
+    info "Default shell is $current_shell, not zsh. You can change it with:"
+    info "  chsh -s $(which zsh)"
+  else
+    success "Default shell is zsh."
+  fi
+}
+
+check_shell
 

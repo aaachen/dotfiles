@@ -36,6 +36,9 @@ alias grs='git reset'
 alias orph='pacman -Qdtq'
 alias rmorph='pacman -Rs $(pacman -Qdtq)'
 
+# yazi
+alias lf='yazi'
+
 # qrcp
 alias receive-phone-file='qrcp receive --output=/home/andrew/tmp/qrcp'
 alias send-phone-file='qrcp'
@@ -47,6 +50,23 @@ alias k9='kill -9'
 alias brewu='brew update && brew upgrade && brew cleanup && brew doctor'
 
 case "$(uname -s)" in
-    Linux*)     alias o="xdg-open"; alias open="xdg-open";;
+    Linux*)     
+        alias o="xdg-open"
+        alias open="xdg-open"
+        
+        # Smart clipboard alias
+        if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+            alias pbcopy='wl-copy'
+            alias pbpaste='wl-paste'
+        else
+            alias pbcopy='xclip -selection clipboard'
+            alias pbpaste='xclip -selection clipboard -o'
+        fi
+
+        # Conditional dgop alias for top
+        if command -v dgop >/dev/null 2>&1; then
+            alias top='dgop'
+        fi
+        ;;
     Darwin*)    alias o="open";;
 esac
