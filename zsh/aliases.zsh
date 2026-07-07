@@ -70,3 +70,4 @@ case "$(uname -s)" in
         ;;
     Darwin*)    alias o="open";;
 esac
+

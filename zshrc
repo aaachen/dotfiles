@@ -80,7 +80,5 @@ if type "keychain" > /dev/null; then
     eval $(keychain -q --eval --noask id_ed25519);
 fi
 
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/home/aaachen/.lmstudio/bin"
-# End of LM Studio CLI section
+eval "$(~/.local/bin/mise activate zsh)"
 

@@ -9,15 +9,12 @@
 # rust cargo bin
 export PATH=$PATH:$HOME/.cargo/bin
 
-# Spotify client
-# export PATH=$PATH:$HOME/.spicetify
-
 # custom user commands
 export PATH=$PATH:$HOME/bin
 export PATH=$PATH:$HOME/bin/stow
 export PATH="$PATH:$HOME/.local/bin"
-
 export PATH=$HOME/.npm-global/bin:$PATH
+export PATH="$PATH:$HOME/.lmstudio/bin"
 
 # Obsidian
 export f="$HOME/Documents/forest"
@@ -33,3 +30,4 @@ export w="$HOME/workspace"
 
 # https://github.com/keybase/keybase-issues/issues/2798
 export GPG_TTY=$(tty)
+
